@@ -8,23 +8,20 @@ class UsersController {
         const {name, email, password} = request.body;
 
         const database =await sqliteConnection();
-        const checkUserExists = await database.get("SELECT * FROM users WHERE email =(?)", [email]);
+        const  userWithUpdateEmail = await database.get("SELECT * FROM users WHERE email =(?)", [email]);
 
         if(!name) {
             throw new AppError("Informar o nome é obrigatório");
         }
-
-        if (checkUserExists) {
+        
+        if (userWithUpdateEmail) {
             throw new AppError("Este email já está em uso!")
-        }
-        if(!checkEmailExists) {
-            throw new AppError("Informe um email válido! ");
         }
         
         const hashedPassword = await hash(password, 8);
 
         await database.run("INSERT INTO users(name, email, password) VALUES (?, ?, ?)", [name, email, hashedPassword]);
-
+        console.log("chega aqui");
         return response.status(201).json();
     }
 
