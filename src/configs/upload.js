@@ -14,12 +14,12 @@ const MULTER = {
 
             return callback(null, filename);
 
-        }
+        },
     }),
 };
 
 module.exports = {
     TMP_FOLDER,
     UPLOADS_FOLDER,
-    MULTER
+    MULTER,
 }

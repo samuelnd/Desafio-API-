@@ -1,12 +1,11 @@
-const knexfile = require("../../knexfile");
+
 const knex = require("../database/knex");
 
 
 class MoviesNotesController {
     async create(request, response){
         const {title, description, rating, tags} = request.body;
-        const {user_id} = request.params;
-        
+        const user_id = request.user.id;
 
         const note_id = await knex("movies").insert({
             title,
@@ -14,6 +13,7 @@ class MoviesNotesController {
             rating,
             user_id
         });
+        
 
         const tagsInsert = tags.map(name => {
             return {
@@ -24,8 +24,8 @@ class MoviesNotesController {
         });
 
         await knex("tags").insert(tagsInsert);
-
         return response.json();
+
     }
     
     async show(request, response) {
@@ -51,11 +51,9 @@ class MoviesNotesController {
     }
 
     async index(request, response) {
-        const {title, user_id, tags} = request.query;
-
+        const {title,  tags} = request.query;
+        const user_id = request.user.id;
         let movies;
-        console.log(tags);
-
         if(tags){
             const filterTags = tags.split(',').map(tag =>tag.trim());
 
@@ -74,11 +72,9 @@ class MoviesNotesController {
         }else {
             movies = await knex("movies")
             .where({user_id})
-            whereLike("title", `%${title}%`)
+            .whereLike("title", `%${title}%`)
             .orderBy("title");
         }
-        console.log(tags);
-
         const userTags = await knex("tags").where({user_id});
         const notesWithTags = movies.map(note => {
             const noteTags = userTags.filter(tag => tag.note_id === note.id);
@@ -88,11 +84,11 @@ class MoviesNotesController {
                 tags: noteTags
             }
         });
-        console.log(tags);
-
+        console.log(  notesWithTags )
 
         return response.json(notesWithTags);
     }
 }
+
 
 module.exports = MoviesNotesController;
