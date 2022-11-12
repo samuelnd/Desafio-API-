@@ -6,7 +6,7 @@
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js --env production",
     "dev": "nodemon ./src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --watch"
   },
   "keywords": [],
   "author": "",
@@ -24,5 +24,8 @@
     "pm2": "^5.2.2",
     "sqlite": "^4.1.1",
     "sqlite3": "^5.0.8"
+  },
+  "devDependencies": {
+    "jest": "^29.3.1"
   }
 }
